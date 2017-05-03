@@ -1,14 +1,42 @@
-'use strict';
-import { ExtensionContext, commands, window } from 'vscode'
+'use strict'
+import {
+    ExtensionContext,
+    DocumentFormattingEditProvider,
+    Range,
+    Position,
+    TextDocument,
+    TextEdit,
+    languages
+} from 'vscode'
 
-export const activate = (context: ExtensionContext) => {
+import format from './format'
 
-    let formatDisposable = commands.registerCommand('extension.formatSQR', () => {
-        window.showInformationMessage('SQR formatted successfully.!!')
-    })
-    context.subscriptions.push(formatDisposable)
+const getRange = (document: TextDocument): Range => {
+    let start: Position = new Position(0, 0)
+    let endLine = document.lineCount - 1
+    let end: Position = new Position(endLine, document.lineAt(endLine).text.length)
+    return new Range(start, end)
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {
+class SQRDocumentFormatter implements DocumentFormattingEditProvider {
+
+    provideDocumentFormattingEdits = (document: TextDocument): TextEdit[] | Thenable<TextEdit[]> => {
+        let originText: string = document.getText()
+        let formattedText: string = format(originText)
+        let textEdits: TextEdit[] = []
+        const range = getRange(document)
+        let reformated = TextEdit.replace(range, formattedText)
+        textEdits.push(reformated)
+
+        return textEdits
+    }
+}
+
+export const activate = (context: ExtensionContext) => {
+    let disposableFormatDoc = languages.registerDocumentFormattingEditProvider(['sqr'], new SQRDocumentFormatter())
+    context.subscriptions.push(disposableFormatDoc)
+}
+
+export const deactivate = () => {
+    console.log('SQR Formatting Extension Deactivated. :(')
 }

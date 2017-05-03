@@ -8,20 +8,13 @@
         "vscode": "^1.11.0"
     },
     "categories": [
+        "Languages",
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.formatSQR"
+        "onLanguage:sqr"
     ],
     "main": "./out/src/extension",
-    "contributes": {
-        "commands": [
-            {
-                "command": "extension.formatSQR",
-                "title": "Format SQR"
-            }
-        ]
-    },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
         "compile": "tsc -watch -p ./",
