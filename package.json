@@ -1,7 +1,7 @@
 {
     "name": "vscode-sqr-formatter",
-    "displayName": "vscode-sqr-formatter",
-    "description": "Syntax Highlighting and Formatting SQR Programs",
+    "displayName": "Syntax Highlight and Format SQR",
+    "description": "Syntax Highlight and Format SQR Programs",
     "version": "0.0.1",
     "publisher": "vinodronold",
     "engines": {
@@ -15,10 +15,12 @@
     ],
     "main": "./out/src/extension",
     "contributes": {
-        "commands": [{
-            "command": "extension.formatSQR",
-            "title": "Format SQR"
-        }]
+        "commands": [
+            {
+                "command": "extension.formatSQR",
+                "title": "Format SQR"
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
