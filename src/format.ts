@@ -1,11 +1,12 @@
 'use strict'
 import { EOL } from 'os'
 
-const reBegin = new RegExp(/^begin|declare/, "i")
-const reEnd = new RegExp(/^end/, "i")
+const reBegin = new RegExp(/^(begin|declare|if|#if|evaluate|when)/, "i")
+const reEnd = new RegExp(/^(end|#end|else|#else|break)/, "i")
 const reComments = new RegExp(/^!/)
 let indentLevel: number = 0
 
+const incrementIndend = () => indentLevel++
 const decrementIndend = () => {
     indentLevel--
     if (indentLevel < 0) {
@@ -23,16 +24,16 @@ const formatLine = (line: string) => {
         case reComments.test(line):
             // DO NOT INDEND 
             //console.log('comment')
-            break;
-        case reEnd.test(line):
-            decrementIndend()
-            line = EOL + formattedLine(line)
-            //console.log('end')
             break
         case reBegin.test(line):
-            line = formattedLine(line) + EOL
-            indentLevel++
+            line = EOL + formattedLine(line) + EOL
+            incrementIndend()
             //console.log('begin')
+            break
+        case reEnd.test(line):
+            decrementIndend()
+            line = EOL + formattedLine(line) + EOL
+            //console.log('end')
             break
         default:
             line = formattedLine(line)
