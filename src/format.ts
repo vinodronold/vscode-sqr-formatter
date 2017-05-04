@@ -12,6 +12,7 @@ const reEndSelect = new RegExp(/^(end-select)/, "i")
 let beginSelectBlock: boolean = false
 
 let formattedDoc: Array<string> = []
+const pushToFormattedDoc = line => formattedDoc.push(line)
 
 const incrementIndend = () => indendLevel++
 const decrementIndend = () => {
@@ -26,13 +27,14 @@ const formattedLine = (ln: string, level: number) => {
     return (' '.repeat(level * 4) + ln)
 }
 
-const formatDoc = (line: string) => {
+const formatLine = (line: string) => {
 
     if (beginSelectBlock) {
         if (line.substring(0, 1) === ' ') {
             beginSelectBlock = false
         } else {
-            return line.trim()
+            pushToFormattedDoc(line.trim())
+            return
         }
     }
 
@@ -68,14 +70,21 @@ const formatDoc = (line: string) => {
             line = formattedLine(line, indendLevel)
         //console.log('default')
     }
-    return line
+
+    pushToFormattedDoc(line)
+    return
+}
+
+const formatDoc = (docLines: Array<string>) => {
+    docLines.forEach(formatLine)
+    return formattedDoc
 }
 
 const format = (doc: string) => {
     console.log('Begin Format . . . ')
     let docLines: Array<string> = doc.split(EOL)
     docLines = docLines.filter((l) => (l.trim().length > 0))
-    return docLines.map(formatDoc).join(EOL)
+    return formatDoc(docLines).join(EOL)
 }
 
 export default format
